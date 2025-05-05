@@ -71,10 +71,6 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-
-
-
-
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Content-Type", "application/json")
@@ -113,12 +109,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 
 }
-
-
-
-
-
-
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")

@@ -21,6 +21,8 @@ type User struct {
 	Role      Role      `json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 	Token     string    `json:"token"`
+	Goal      int       `weight:"goal"`
+	Weight    int       `json:"weight"`
 }
 
 type LoginData struct {

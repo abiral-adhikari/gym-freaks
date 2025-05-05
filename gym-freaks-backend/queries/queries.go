@@ -1,6 +1,8 @@
 package queries
 
 const CreateUserTableSQL = `
+--DROP TABLE IF EXISTS users CASCADE;
+
 CREATE TABLE IF NOT EXISTS users (
 	id SERIAL PRIMARY KEY,
 	username TEXT NOT NULL,
@@ -10,13 +12,17 @@ CREATE TABLE IF NOT EXISTS users (
 	dob TIMESTAMP,
 	role TEXT NOT NULL,
 	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	token TEXT
+	token TEXT,
+	goal INT ,
+	weight INT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS foods (
+
+CREATE TABLE IF NOT EXISTS foods(
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
 	calories INT NOT NULL,
-	unit TEXT NOT NULL
+	unit TEXT NOT NULL,
+	createdby INT NOT NULL REFERENCES foods(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS meals (
@@ -33,7 +39,8 @@ CREATE TABLE IF NOT EXISTS exercises (
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
 	description TEXT,
-	type TEXT NOT NULL
+	type TEXT NOT NULL,
+	createdby INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS workouts (
@@ -50,8 +57,8 @@ CREATE TABLE IF NOT EXISTS workouts (
 
 // This file contains SQL queries for the Gym Freaks application.
 const CreateUserQuery = `
-	INSERT INTO users (username, password, email, phone, dob, role)
-	VALUES ($1, $2, $3, $4, $5, $6)
+	INSERT INTO users (username, password, email, phone, dob, role,goal,weight)
+	VALUES ($1, $2, $3, $4, $5, $6,$7,$8)
 	RETURNING id;
 	`
 
@@ -89,7 +96,9 @@ const DeleteFoodQuery = `
 	`
 
 const GetFoodQuery = `
-	SELECT id, name, calories, unit
-	FROM food
+	SELECT m.id, u.id, u.username, f.id, f.name, m.quantity, m.time, m.meal_type, m.notes
+	FROM meals m
+	JOIN users u ON m.user_id = u.id
+	JOIN food f ON m.food_id = f.id
 	WHERE 1=1
 `

@@ -15,21 +15,22 @@ func Router() *mux.Router {
 	router.HandleFunc("/login", handlers.LoginHandler).Methods("POST")
 	router.HandleFunc("/logout", handlers.LogoutHandler).Methods("GET")
 
-	//  Use Route Group to group protected paths
-	authrouter := &RouteGroup{
-		router: router,
-		prefix: "",
-	}
+	// //  Use Route Group to group protected paths
+	// authrouter := &RouteGroup{
+	// 	router: router,
+	// 	prefix: "",
+	// }
 
-	// Food Handler
-	authrouter.HandleFunc("/food", handlers.FoodHandler).Methods("POST")
-	authrouter.HandleFunc("/food", handleres.FoodHandler).Methods("GET")
-	authrouter.HandleFunc("/food/{id}", handlers.FoodHandler).Methods("PATCH")
-	authrouter.HandleFunc("/food/{id}", handlers.FoodHandler).Methods("GET")
-	authrouter.HandleFunc("/food/{id}", handlers.FoodHandler).Methods("DELETE")
-	return router
+	// // Food Handler
+	// authrouter.HandleFunc("/food", handlers.FoodHandler).Methods("POST")
+	// authrouter.HandleFunc("/food", handleres.FoodHandler).Methods("GET")
+	// authrouter.HandleFunc("/food/{id}", handlers.FoodHandler).Methods("PATCH")
+	// authrouter.HandleFunc("/food/{id}", handlers.FoodHandler).Methods("GET")
+	// authrouter.HandleFunc("/food/{id}", handlers.FoodHandler).Methods("DELETE")
+	// return router
 
 	// router.Handle4Func("/exercise", ExerciseHandler).Methods("GET")
+	return router
 }
 
 // RouteGroup struct with middleware applied to all routes it registers

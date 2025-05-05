@@ -7,7 +7,7 @@ type Food struct {
 	Name      string `json:"name"`
 	Calories  int    `json:"calories"`
 	Unit      string `json:"unit"`
-	// CreatedBy *User  `json:"createdby"`
+	CreatedBy *User  `json:"createdby"`
 }
 
 type Meal struct {
@@ -19,4 +19,3 @@ type Meal struct {
 	MealType string    `json:"mealType"`
 	Notes    string    `json:"notes"`
 }
-

@@ -20,7 +20,7 @@ func SignUp(user models.User) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	err = conn.QueryRow(context.Background(), queries.CreateUserQuery, user.Username, hash, user.Email, user.Phone, user.Dob.ToTime(), user.Role).Scan(&userID)
+	err = conn.QueryRow(context.Background(), queries.CreateUserQuery, user.Username, hash, user.Email, user.Phone, user.Dob.ToTime(), user.Role, user.Goal, user.Weight).Scan(&userID)
 	if err != nil {
 		return "", fmt.Errorf("error inserting user: %v", err)
 	}
@@ -52,7 +52,7 @@ func Login(loginData models.LoginData) (message string, token string, flag bool)
 	data := conn.QueryRow(context.Background(), queries.LoginQuery, loginData.Phone)
 	var dob time.Time
 	err := data.Scan(
-		&userfromDB.ID, &userfromDB.Username, &userfromDB.Password, &userfromDB.Email, &userfromDB.Phone, &dob, &userfromDB.Role, &userfromDB.CreatedAt, &userfromDB.Token,
+		&userfromDB.ID, &userfromDB.Username, &userfromDB.Password, &userfromDB.Email, &userfromDB.Phone, &dob, &userfromDB.Role, &userfromDB.CreatedAt, &userfromDB.Token, &userfromDB.Goal, &userfromDB.Weight,
 	)
 	userfromDB.Dob = models.Date(dob) // Convert time.Time to models.Date
 	if err != nil {

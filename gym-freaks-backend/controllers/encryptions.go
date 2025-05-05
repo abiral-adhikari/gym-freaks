@@ -21,6 +21,8 @@ type MyClaims struct {
 	Dob       models.Date `json:"dob"`
 	Role      models.Role `json:"role"`
 	CreatedAt time.Time   `json:"createdAt"`
+	Weight    int         `json:"weight"`
+	Goal      int         `json:"goal"`
 	jwt.RegisteredClaims
 }
 
@@ -55,6 +57,8 @@ func CreateJWT(user models.User) (string, error) {
 		Dob:       user.Dob,
 		Role:      user.Role,
 		CreatedAt: user.CreatedAt,
+		Goal:      user.Goal,
+		Weight:    user.Weight,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -80,7 +84,7 @@ func VerifyJWT(tokenString string) (*MyClaims, error) {
 		return nil, fmt.Errorf("secret key is not set")
 	}
 
-	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (any, error) {
 		// Validate the signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

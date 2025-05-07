@@ -62,7 +62,7 @@ func (h *FoodHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Update(w http.ResponseWriter, r *http.Request) {
+func (h *FoodHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
@@ -103,7 +103,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func (h *FoodHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
@@ -143,10 +143,10 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-func Search(w http.ResponseWriter, r *http.Request) {
+func (h *FoodHandler) Search(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
 	var food models.FoodSearchRequest
 	// read request to create food
 	req, _ := io.ReadAll(r.Body)
@@ -173,10 +173,10 @@ func Search(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-func GetOne(w http.ResponseWriter, r *http.Request) {
+func (h *FoodHandler) GetOne(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
 
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
@@ -196,3 +196,5 @@ func GetOne(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
+
+var FoodHandlers = &FoodHandler{}

@@ -166,7 +166,7 @@ type Creatable interface {
 	GetCreatorID() int
 }
 
-func IsCreator(model Creatable, id int) bool {
+func CheckCreator(model Creatable, id int) bool {
 	if model.GetCreatorID() == id {
 		return true
 	} else {

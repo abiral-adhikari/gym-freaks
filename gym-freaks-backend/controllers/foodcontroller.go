@@ -12,8 +12,11 @@ type FoodController struct{}
 
 func (FC *FoodController) Create(food models.Food) (int, error) {
 	conn := database.DBConnect()
-	
-	err := conn.QueryRow(context.Background(), queries.CreateFoodQuery, food.Name, food.Calories, food.Unit, food.CreatedBy).Scan(&food.FoodID)
+	err := conn.QueryRow(context.Background(), queries.GetFoodByNameQuery, food.Name).Scan(&food.FoodID)
+	if err != nil {
+		return 0, fmt.Errorf("Food Already Exits %v", err)
+	}
+	err = conn.QueryRow(context.Background(), queries.CreateFoodQuery, food.Name, food.Calories, food.Unit, food.CreatedBy).Scan(&food.FoodID)
 	if err != nil {
 		return 0, fmt.Errorf("error inserting food %v", err)
 	}
@@ -43,29 +46,34 @@ func (FC *FoodController) Delete(food models.Food) (int, error) {
 
 }
 
-func (fc *FoodController) Get(name, unit string, minCalories, maxCalories int) ([]models.Food, error) {
-	query := queries.GetFoodQuery
+func (fc *FoodController) Search(foodname, unit, createdby string, minCalories, maxCalories int) ([]models.Food, error) {
+	query := queries.SearchFoodQuery
 	args := []any{}
 	argIndex := 1
 
-	if name != "" {
-		query += fmt.Sprintf(" AND name ILIKE $%d", argIndex)
-		args = append(args, "%"+name+"%")
+	if foodname != "" {
+		query += fmt.Sprintf(" AND f.name ILIKE $%d", argIndex)
+		args = append(args, "%"+foodname+"%")
 		argIndex++
 	}
 	if unit != "" {
-		query += fmt.Sprintf(" AND unit = $%d", argIndex)
+		query += fmt.Sprintf(" AND f.unit = $%d", argIndex)
 		args = append(args, unit)
 		argIndex++
 	}
 	if minCalories > 0 {
-		query += fmt.Sprintf(" AND calories >= $%d", argIndex)
+		query += fmt.Sprintf(" AND f.calories >= $%d", argIndex)
 		args = append(args, minCalories)
 		argIndex++
 	}
 	if maxCalories > 0 {
-		query += fmt.Sprintf(" AND calories <= $%d", argIndex)
+		query += fmt.Sprintf(" AND f.calories <= $%d", argIndex)
 		args = append(args, maxCalories)
+		argIndex++
+	}
+	if createdby != "" {
+		query += fmt.Sprintf("AND u.username ILIKE$%d", argIndex)
+		args = append(args, createdby)
 		argIndex++
 	}
 
@@ -87,4 +95,16 @@ func (fc *FoodController) Get(name, unit string, minCalories, maxCalories int) (
 	return foods, nil
 }
 
+func (fc *FoodController) GetOne(foodid int) (models.Food, error) {
+	conn := database.DBConnect()
+	defer database.Close()
+	var food models.Food
+	err := conn.QueryRow(context.Background(), queries.GetFoodByIDQuery, foodid).Scan(&food.FoodID, &food.Name, &food.Calories, &food.Unit, &food.CreatedBy.ID, &food.CreatedBy.Username, &food.CreatedBy.Role)
+	if err != nil {
+		return models.Food{}, fmt.Errorf("error inserting food %v", err)
+	}
+	return food, nil
+}
+
+// func(fc *FoodController)
 var FoodControllers = &FoodController{}

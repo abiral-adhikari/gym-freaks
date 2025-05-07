@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS foods(
 	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL,
+	name TEXT NOT NULL UNIQUE,
 	calories INT NOT NULL,
 	unit TEXT NOT NULL,
-	createdby INT NOT NULL REFERENCES foods(id) ON DELETE CASCADE
+	createdby INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS meals (
@@ -77,28 +77,47 @@ const LogoutQuery = `
 	UPDATE users SET token = '' WHERE id = $1;
 	`
 
+// Food And Meals
 const CreateFoodQuery = `
-	INSERT INTO food (name,calories,unit)
+	INSERT INTO foods (name,calories,unit)
 	VALUES ($1, $2, $3)
 	RETURNING id;
 	`
 
 const UpdateFoodQuery = `
-	UPDATE food 
+	UPDATE foods 
 	SET name=$2, calories=$3,unit=$4
 	where id=$1
 	returning id;
 `
 
 const DeleteFoodQuery = `
-	DELETE FROM food
+	DELETE FROM foods
 	where id=$1
 	`
 
-const GetFoodQuery = `
+const GetFoodByIDQuery = `
+	SELECT * FROM foods WHERE id = $1;
+`
+
+const GetFoodByNameQuery = `
+	SELECT 
+		f.id,f.name,f.calories,f.unit,
+		u.id,u.username,u.role
+		FROM foods f
+	JOIN users u ON f.createdyby = u.id
+	WHERE f.id =$1 `
+
+const SearchFoodQuery = `
+	SELECT f.id,f.name,f.calories,f.unit,u.id,u.username
+	FROM foods f
+	JOIN users u ON f.createdyby = u.id
+	WHERE 1=1
+`
+const SearchMealQuery = `
 	SELECT m.id, u.id, u.username, f.id, f.name, m.quantity, m.time, m.meal_type, m.notes
 	FROM meals m
 	JOIN users u ON m.user_id = u.id
-	JOIN food f ON m.food_id = f.id
+	JOIN foods f ON m.food_id = f.id
 	WHERE 1=1
 `

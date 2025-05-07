@@ -20,7 +20,15 @@ type Meal struct {
 	Notes    string    `json:"notes"`
 }
 
-func (f *Food) GetCreatorID() int {
+type FoodSearchRequest struct {
+	FoodName    string `json:"name"`
+	Unit        string `json:"unit,omitempty"`
+	CreatedBy   string `json:"createdby,omitempty"`
+	MinCalories int    `json:"minCalories"`
+	MaxCalories int    `json:"maxCalories"`
+}
+
+func (f Food) GetCreatorID() int {
 	if f.CreatedBy == nil {
 		return 0
 	}

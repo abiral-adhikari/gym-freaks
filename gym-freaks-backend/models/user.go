@@ -29,3 +29,10 @@ type LoginData struct {
 	Phone    int    `json:"phone"`
 	Password string `json:"password"`
 }
+
+func (f *User) GetRole() Role {
+	if f == nil {
+		return ""
+	}
+	return f.Role
+}

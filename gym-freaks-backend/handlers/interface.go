@@ -17,3 +17,4 @@ type FoodHandlerInterface interface {
 	Update(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
 }
+

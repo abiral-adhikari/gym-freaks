@@ -159,3 +159,17 @@ func GetUserRoleFromToken(tokenString string) (role models.Role, err error) {
 	role = claims.Role
 	return role, nil
 }
+
+// Define Interface Creatable for any type(struct)to that has GetCreatorID method
+
+type Creatable interface {
+	GetCreatorID() int
+}
+
+func IsCreator(model Creatable, id int) bool {
+	if model.GetCreatorID() == id {
+		return true
+	} else {
+		return false
+	}
+}

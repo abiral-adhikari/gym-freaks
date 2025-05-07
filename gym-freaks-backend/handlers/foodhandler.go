@@ -58,5 +58,30 @@ func (h *FoodHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func Update(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	var food models.Food
+	// Read the request body to get token payload
+	userDataFromToken, err := controllers.GetTokenPayloadFromRequest(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if userDataFromToken.Role != "trainer" {
+		http.Error(w, "Only trainers are allowed to create food", http.StatusForbidden)
+	}
+	// read request to create food
+	req, _ := io.ReadAll(r.Body)
+	err = json.Unmarshal(req, &food)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-func 
+	isCreater=CheckCreater(food.CreatedBy.ID, userDataFromToken.ID)
+
+}
+
+// func CheckCreater(food.id)

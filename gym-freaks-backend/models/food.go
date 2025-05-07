@@ -19,3 +19,17 @@ type Meal struct {
 	MealType string    `json:"mealType"`
 	Notes    string    `json:"notes"`
 }
+
+func (f *Food) GetCreatorID() int {
+	if f.CreatedBy == nil {
+		return 0
+	}
+	return f.CreatedBy.ID
+}
+
+func (m *Meal) GetCreatorID() int {
+	if m.User == nil {
+		return 0
+	}
+	return m.User.ID
+}

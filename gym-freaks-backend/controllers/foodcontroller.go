@@ -12,7 +12,7 @@ type FoodController struct{}
 
 func (FC *FoodController) Create(food models.Food) (int, error) {
 	conn := database.DBConnect()
-
+	
 	err := conn.QueryRow(context.Background(), queries.CreateFoodQuery, food.Name, food.Calories, food.Unit, food.CreatedBy).Scan(&food.FoodID)
 	if err != nil {
 		return 0, fmt.Errorf("error inserting food %v", err)
@@ -45,7 +45,7 @@ func (FC *FoodController) Delete(food models.Food) (int, error) {
 
 func (fc *FoodController) Get(name, unit string, minCalories, maxCalories int) ([]models.Food, error) {
 	query := queries.GetFoodQuery
-	args := []interface{}{}
+	args := []any{}
 	argIndex := 1
 
 	if name != "" {
